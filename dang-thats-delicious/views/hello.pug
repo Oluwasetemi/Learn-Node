@@ -1,3 +1,6 @@
-div
-  p Hello!
-  span Yo!!
+extends layout
+
+
+
+block content
+  p hello! #{h.moment().endOf('day').fromNow()}
