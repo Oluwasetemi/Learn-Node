@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const storeController = require('../controllers/storeController')
+const userController = require('../controllers/userController')
+const authController = require('../controllers/authController')
 
 const {
   catchErrors
@@ -9,7 +11,7 @@ const {
 // Do work here
 router.get('/', catchErrors(storeController.getStores));
 router.get('/stores', catchErrors(storeController.getStores));
-router.get('/add', storeController.addStore);
+router.get('/add', authController.isLoggedIn, storeController.addStore);
 
 router.post('/add',
   storeController.upload,
@@ -34,4 +36,23 @@ router.get('/reverse/:name', (req, res) => {
 router.get('/tags', catchErrors(storeController.getStoresByTag))
 router.get('/tags/:tag', catchErrors(storeController.getStoresByTag))
 
-module.exports = router;
+router.get('/login', userController.loginForm)
+router.post('/login', authController.login)
+router.get('/register', userController.registerForm)
+
+// TODO | FIXME!!
+// 1. validate the registration data
+// 2. register the user
+// 3. we need to log them in
+router.post('/register', 
+  userController.validateRegister, 
+  userController.register, 
+  authController.login
+)
+
+router.get('/logout', authController.logout)
+
+router.get('/account', authController.isLoggedIn, userController.account)
+router.post('/account', catchErrors(userController.updateAccount))
+
+module.exports = router
