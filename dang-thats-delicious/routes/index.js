@@ -5,13 +5,12 @@ const userController = require('../controllers/userController')
 const authController = require('../controllers/authController')
 const reviewController = require('../controllers/reviewController')
 
-const {
-	catchErrors
-} = require('../handlers/errorHandlers')
+const { catchErrors } = require('../handlers/errorHandlers')
 
 // Do work here
 router.get('/', catchErrors(storeController.getStores))
 router.get('/stores', catchErrors(storeController.getStores))
+router.get('/stores/page/:page', catchErrors(storeController.getStores))
 router.get('/add', 
 	authController.isLoggedIn, 
 	storeController.addStore
@@ -36,9 +35,14 @@ router.get('/reverse/:name', (req, res) => {
 	const reverse = [...req.params.name].reverse().join('')
 	res.send(reverse)
 })
-
 router.get('/tags', catchErrors(storeController.getStoresByTag))
+
 router.get('/tags/:tag', catchErrors(storeController.getStoresByTag))
+router.get('/tags/page/:page', catchErrors(storeController.getStoresByTag))
+
+router.get('/tags/:tag/page/:page', catchErrors(storeController.getStoresByTag))
+
+
 
 router.get('/login', userController.loginForm)
 router.post('/login', authController.login)
@@ -69,10 +73,15 @@ router.get('/hearts',
 	authController.isLoggedIn, 
 	catchErrors(storeController.getHearts)
 )
+router.get('/hearts/page/:page', 
+	authController.isLoggedIn, 
+	catchErrors(storeController.getHearts)
+)
 router.post('/reviews/:id', 
 	authController.isLoggedIn, 
 	catchErrors(reviewController.addReview)
 )
+router.get('/top', catchErrors(storeController.getTopStores))
 
 /* 
 	API

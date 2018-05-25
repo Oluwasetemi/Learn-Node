@@ -960,22 +960,22 @@ process.umask = function () {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+	value: true
 });
 function autocomplete(input, latInput, lngInput) {
-    if (!input) return; //skip this fn if there is no input on the page
-    var dropdown = new google.maps.places.Autocomplete(input);
+	if (!input) return; //skip this fn if there is no input on the page
+	var dropdown = new google.maps.places.Autocomplete(input);
 
-    dropdown.addListener('place_changed', function () {
-        var place = dropdown.getPlace();
-        // console.log(place)
-        latInput.value = place.geometry.location.lat();
-        lngInput.value = place.geometry.location.lng();
-    });
-    // if someone hits enter on the address field, don't submit the form
-    input.on('keyCode === 13', function (e) {
-        if (e.keyCode === 13) e.preventDefault();
-    });
+	dropdown.addListener('place_changed', function () {
+		var place = dropdown.getPlace();
+		// console.log(place)
+		latInput.value = place.geometry.location.lat();
+		lngInput.value = place.geometry.location.lng();
+	});
+	// if someone hits enter on the address field, don't submit the form
+	input.on('keydown', function (e) {
+		if (e.keyCode === 13) e.preventDefault();
+	});
 }
 
 exports.default = autocomplete;
