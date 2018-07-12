@@ -3,29 +3,27 @@ const pug = require('pug')
 const juice = require('juice')
 const htmlToText = require('html-to-text')
 const promisify = require('es6-promisify')
-const postmarkTransport = require('nodemailer-postmark-transport')
+// const postmarkTransport = require('nodemailer-postmark-transport')
 
 const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey(process.env.MAIL_KEY)
+const sgTransport = require('nodemailer-sendgrid-transport')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 
-// const msg = {
-//   to: 'admin@admin.com',
-//   from: 'test@example.com',
-//   subject: 'Sending with SendGrid is Fun',
-//   text: 'and easy to do anywhere, even with Node.js',
-//   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-// };
-// sgMail.send(msg);
-
-const transport = nodemailer.createTransport({
-	host: process.env.MAIL_HOST,
-	port: process.env.MAIL_PORT,
-	auth: {
-		user: process.env.MAIL_USER,
-		pass: process.env.MAIL_PASS
+const transport = nodemailer.createTransport(sgTransport(
+	{
+		// host: process.env.MAIL_HOST,
+		// port: process.env.MAIL_PORT,
+		service: 'SendGrid',
+		auth: {
+			// user: process.env.MAIL_USER,
+			// pass: process.env.MAIL_PASS,
+			// api_key: process.env.SENDGRID_API_KEY,
+			api_user: process.env.SENDGRID_USER,
+			api_key: process.env.SENDGRID_PASS,
+		}
 	}
-})
+))
 
 const generateHTML = (filename, options = {}) => {
 	const html = pug.renderFile(`${__dirname}/../views/email/${filename}.pug`, options)
@@ -37,23 +35,13 @@ exports.send = async (options) => {
 	const html = generateHTML(options.filename, options)
 	const text = htmlToText.fromString(html)
 	const mailOptions = {
+		from: 'Setemi Ojo<setemiojo@gmail.com>',
 		to: options.user.email,
+		subject: options.subject,
 		html,
 		text
 	}
-	console.log(text)
+	// console.log(mailOptions)
 	const sendMail = promisify(transport.sendMail, transport)
-	return await sendMail(mailOptions)
+	return sendMail(mailOptions)
 }
-
-transport.sendMail({
-	from: 'Setemi <setemi@gmail.com>',
-	to: 'admin@admin.com',
-	subject: 'Hi',
-	html: 'Hello I <strong>love you</strong>',
-	text: 'Hey I love you'
-}, (err) => {
-	if (err) {
-		console.error(err)
-	}
-})
