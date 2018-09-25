@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Review = mongoose.model('Review')
 
 exports.addReview = async (req, res) => {
-	console.log(req.body.author)
+	// console.log(req.body.author)
 	req.body.author = req.user._id
 	req.body.store = req.params.id
 	const newReview = new Review(req.body)

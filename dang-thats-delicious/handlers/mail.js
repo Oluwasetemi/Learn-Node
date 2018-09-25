@@ -29,13 +29,13 @@ const generateHTML = (filename, options = {}) => {
 	const html = pug.renderFile(`${__dirname}/../views/email/${filename}.pug`, options)
 	const inlined = juice(html)
 	return inlined
-}
+} 
 
 exports.send = async (options) => {
 	const html = generateHTML(options.filename, options)
 	const text = htmlToText.fromString(html)
 	const mailOptions = {
-		from: 'Setemi Ojo<setemiojo@gmail.com>',
+		from: 'Admin<noreply@stores-app.com>',
 		to: options.user.email,
 		subject: options.subject,
 		html,
